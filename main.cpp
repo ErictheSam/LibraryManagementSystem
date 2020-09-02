@@ -17,11 +17,12 @@ private:
 	Client* client;
 public:
 	LibraryManagementSystem(){
-		db=new Database("LMS");
+		db=new Database("TestLMS");
 		server=new Server(db);
 		client=new Client(server);
 	}
 	void __main__(){
+		//cout<<"Fuck!"<<endl;
 		client->main();
 	}
 	~LibraryManagementSystem(){
@@ -33,8 +34,10 @@ public:
 
 };
 
-int main(){
-	mongocxx::instance inst{};
+int main()
+{	
+	
+    mongocxx::instance inst{};
 	LMS::LibraryManagementSystem().__main__();
 	return 0;
 }

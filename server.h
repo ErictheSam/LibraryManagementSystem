@@ -63,7 +63,7 @@ public:
 	
 	ErrorCode browseBook(const User& currentUser,Book& book);
 	
-	ErrorCode previewBookContent(const User& currentUser,Book book,Content *ret);
+	ErrorCode previewBookContent(const User& currentUser,Book book);
 };
 
 
@@ -92,10 +92,11 @@ ErrorCode Server::search(const User &currentUser,const Search& key,vector<ObjTyp
 		ret.clear();
 		ErrorCode errorCode=db->search(key,ret);
 		if (key["Status"]==""){
-			for (int i=0;i<ret.size();++i)
+			for (int i=0;i<ret.size();i++){
 				if (ret[i]["Status"]=="Frozen"){
 					swap(ret[i],ret.back());
 					ret.pop_back();
+				}
 				}
 		}
 		return errorCode;
@@ -216,6 +217,7 @@ ErrorCode Server::freeze(const User &currentUser,ObjType obj){
 	
 	bool authority=0;
 	string objType=ObjType().typeName();
+//	cout<< objType<<endl;
 	if (objType=="User"){
 		string role=obj["Role"];
 		if (role=="Reader"){
@@ -237,7 +239,7 @@ ErrorCode Server::freeze(const User &currentUser,ObjType obj){
 	else if (objType=="Record"){
 		authority=0;
 	}
-	
+	//cout<< authority<<endl;
 	if (authority){
 		obj.update("Status","Frozen");
 		return db->update(obj);
@@ -271,7 +273,7 @@ ErrorCode Server::unfreeze(const User &currentUser,ObjType obj){
 	else if (objType=="Book"){
 		authority=db->isAdmin(currentUser);
 	}
-	else if (objType=="ParcticalBook"){
+	else if (objType=="PracticalBook"){
 		authority=db->isAdmin(currentUser);
 	}
 	else if (objType=="Record"){

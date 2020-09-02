@@ -7,3 +7,4 @@ class Content{
 public:
 	virtual string show() const=0;
 };
+

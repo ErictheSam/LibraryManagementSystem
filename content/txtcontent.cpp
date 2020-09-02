@@ -4,11 +4,10 @@ using namespace std;
 
 #include "txtcontent.h"
 
-TxtContent::TxtContent():content(""){}
+TxtContent::TxtContent(){}
 TxtContent::TxtContent(const string &_content):content(_content){}
 TxtContent::TxtContent(const string &url,bool &found){
 	ifstream in(url);
-	content="";
 	if (in){
 		found=1;
 		string buffer;

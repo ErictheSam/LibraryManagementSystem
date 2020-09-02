@@ -96,6 +96,7 @@ ErrorCode Server::returnBook(const User& currentUser,const PracticalBook& book){
 
 
 ErrorCode Server::acceptRequest(const User& currentUser,const Record& record){
+	
 	Record res=record;
 	if (!db->findOne(res)) return requestNotFound;
 	if (res["Type"]!="Borrowing"&&res["Type"]!="Returning") return requestNotFound;
@@ -126,6 +127,7 @@ ErrorCode Server::acceptRequest(const User& currentUser,const Record& record){
 			Field("Type","Borrowing"),
 			Field("Status","Accepted")
 		}),recs);
+		
 		if (ret!=0) return ret;
 		if (int(recs.size())!=1) return unknownError;
 		string tmpId=(*recs.begin())["Id"];
@@ -135,6 +137,7 @@ ErrorCode Server::acceptRequest(const User& currentUser,const Record& record){
 		})));
 		if (ret!=0) return ret;
 	}
+	
 	return db->update(Record(set<Field>({
 		Field("Id",res["Id"]),
 		Field("Status","Accepted"),
@@ -175,7 +178,7 @@ ErrorCode Server::browseBook(const User& currentUser,Book& book){
 	}));
 }
 
-ErrorCode Server::previewBookContent(const User& currentUser,Book book,Content *ret){
+ErrorCode Server::previewBookContent(const User& currentUser,Book book){
 	if (!db->findOne(book)) return bookNotFound;
 	
 	if (book["Status"]!="Accessible") return bookInaccessible;
@@ -194,12 +197,11 @@ ErrorCode Server::previewBookContent(const User& currentUser,Book book,Content *
 	if (suffix==url) suffix="";
 	bool found=0;
 	if (suffix=="txt"){
-		ret=new TxtContent(url,found);
+		return noError;
 	}
 	else{
 		return unknownContentSuffix;
 	}
-	return found?noError:bookContentMissing;
 }
 
 
